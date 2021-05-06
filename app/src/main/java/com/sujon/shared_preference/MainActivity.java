@@ -12,8 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText userEmailText,userPasswordText;
     Button submitButton;
-    SharedPreferences preferences;
-    String myPreferenceName = "SHAREPREFERENCE_FILEONE";
+    Save save;
 
 
     @Override
@@ -24,16 +23,14 @@ public class MainActivity extends AppCompatActivity {
         userEmailText = findViewById(R.id.editTextTextEmailAddress);
         userPasswordText = findViewById(R.id.editTextTextPassword);
         submitButton = findViewById(R.id.button);
-        preferences = getSharedPreferences(myPreferenceName,MODE_PRIVATE);
 
-        if (preferences.getBoolean("IS_LOGGEDIN",false)){
-            String email = preferences.getString("USER_EMAIL",null);
-            if (email!=null)
-                Toast.makeText(this,"WELCOME "+email,Toast.LENGTH_SHORT).show();
-
-        } else {
-            Toast.makeText(this,"Please Log in first",Toast.LENGTH_SHORT).show();
+        save = Save.getInstance(this);
+        if (save.getSaveBoolean("IS_LOGGEDIN")){
+            Toast.makeText(this,"Welcome"+save.getSavedString("USER_EMAIL"),Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(this,"Log in first",Toast.LENGTH_SHORT).show();
         }
+
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,12 +38,8 @@ public class MainActivity extends AppCompatActivity {
                 String email = userEmailText.getText().toString();
                 String password = userPasswordText.getText().toString();
 
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("USER_EMAIL",email);
-                editor.putBoolean("IS_LOGGEDIN",true);
-
-//                editor.commit();
-                editor.apply();
+                save.saveString("USER_EMAIL",email);
+                save.saveBoolean("IS_LOGGEDIN",true);
 
             }
         });
